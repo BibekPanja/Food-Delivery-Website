@@ -15,24 +15,36 @@ const Verify = () => {
 
   const verifyPayment = async () => {
     try {
+      console.log("Success:", success);
+      console.log("Order ID:", orderId);
+
       const response = await axios.post(`${url}/api/order/verify`, {
-        success,
-        orderId,
+        success: success,
+        orderId: orderId,
       });
 
+      console.log("Verify Response:", response.data);
+
       if (response.data.success) {
+        // Payment successful
         navigate("/myorders");
       } else {
+        // Payment failed
         navigate("/");
       }
     } catch (error) {
-      console.error(error);
+      console.error("Payment verification error:", error);
+
       navigate("/");
     }
   };
 
   useEffect(() => {
-    verifyPayment();
+    if (success && orderId) {
+      verifyPayment();
+    } else {
+      navigate("/");
+    }
   }, []);
 
   return (
